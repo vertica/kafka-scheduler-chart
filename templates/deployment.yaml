@@ -1,0 +1,80 @@
+{{- if .Values.launcherEnabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "vertica-kafka-scheduler.fullname" . }}
+  labels:
+    {{- include "vertica-kafka-scheduler.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      vertica.com/kafka-scheduler-component: "launcher"
+      {{- include "vertica-kafka-scheduler.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        vertica.com/kafka-scheduler-component: "launcher"
+        {{- include "vertica-kafka-scheduler.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "vertica-kafka-scheduler.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: main
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+          - vkconfig
+          - launch
+          - --conf
+          - /opt/vertica/packages/kafka/config/vkconfig.conf
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+          - name: vkconfig
+            mountPath: /opt/vertica/packages/kafka/config
+          {{- if .Values.tls.enabled }}
+          - name: trustStore
+            mountPath: {{ .Values.tls.trustStoreMountPath }}
+          - name: keyStore
+            mountPath: {{ .Values.tls.keyStoreMountPath }}
+          {{- end }}
+          env:
+          - name: VKCONFIG_JVM_OPTS
+            value: {{ include "vertica-kafka-scheduler.jvmOpts" . }}
+      volumes:
+      - name: vkconfig
+        configMap:
+          name: {{ include "vertica-kafka-scheduler.configmap-fullname" . }}
+      {{- if .Values.tls.enabled }}
+      - name: trustStore
+        secret:
+          secretName: {{ .Values.tls.trustStoreSecretName }}
+      - name: keyStore
+        secret:
+          secretName: {{ .Values.tls.keyStoreSecretName }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+{{- end -}}

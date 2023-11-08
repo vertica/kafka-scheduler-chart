@@ -1,0 +1,121 @@
+# (c) Copyright [2023] Open Text.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# You may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Default values for vertica-kafka-scheduler.
+# This is a YAML-formatted file.
+
+image:
+  repository: vertica/kafka-scheduler
+  pullPolicy: IfNotPresent
+  # Overrides the image tag. If using the official vertica repository, this tag
+  # corresponds to the vertica version that vkconfig was complied against. Pick
+  # the same version that matches the Vertica server you have deployed.
+  tag: "23.4.0"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# The launcher is a deployment object that runs the 'vkconfig launch' program.
+# You must already have done setup of vkconfig for this program to work. You
+# can temporarily disable it to allow for setup to occur.
+launcherEnabled: false
+
+# The size of the launcher deployment.
+replicaCount: 1
+
+# The initializer is a pod that runs the container without invoking vkconfig. It
+# gives you CLI access to the vkconfig command. The intention is that you would
+# use the CLI to do neccessary setup then disabled it when you want to run the
+# launcher.
+initializerEnabled: true
+
+# The vkconfig.conf is a file that is mounted in the pods for command line
+# options passed to vkconfig.
+conf:
+  # Set this to false if you already have a vkconfig.conf in a ConfigMap and
+  # don't need helm to generate one.
+  generate: true
+  # The name of the ConfigMap that contains the contents of vkconfig.conf.
+  # If generate=false, this must already exist before deployment. If this is
+  # omitted a suitable name for the ConfigMap is chosen based on the
+  # release/chart name.
+  configMapName: ""
+  # content is a set of key/value pairs that make up the vkconfig.conf. There
+  # is no prescribed set of keys that need to be here. See this to find options
+  # to set:
+  # https://docs.vertica.com/latest/en/kafka-integration/vkconfig-script-options/common-vkconfig-script-options/
+  content:
+    config-schema: "Scheduler"
+    username: "dbadmin"
+    # password: ""
+    # dbhost: ""
+    dbport: "5433"
+    # If enabled, fill in the conf.tls section too.
+    enable-ssl: "false"
+
+# If vkconfig needs to have TLS setup in order to communicate fill in the
+# following block.
+tls:
+  # Set this to true to mount the secrets and have the JVM options set
+  # for the trust/key store in the pods.
+  enabled: false
+  # Name of a preexisting Secret that contains the truststore to use.
+  trustStoreSecretName: ""
+  # The next two control the name of the trust store. The path will be:
+  # <trustStoreMountPath>/<trustStoreSecretKey>
+  #
+  # The directory mount for the trustStoreSecretName.
+  trustStoreMountPath: ""
+  # The key within trustStoreSecretName that has the truststore to use. This
+  # will be mounted as a file within the pod.
+  trustStoreSecretKey: ""
+  # Name of a preexisting Secret that contains the keystore to use.
+  keyStoreSecretName: ""
+  # The next two control the name of the key store. The path will be:
+  # <keyStoreMountPath>/<keyStoreSecretKey>
+  #
+  # The directory mount for the keyStoreSecretName.
+  keyStoreMountPath: ""
+  # The key within keyStoreSecretName that has the keystore to use. This
+  # will be mounted as a file within the pod.
+  keyStoreSecretKey: ""
+  # The password to access the keystore
+  keyStorePassword: ""
+
+# Controls the setting of VKCONFIG_JVM_OPTS in the pods. Values for truststore
+# and keystore are added automatically based on the tls.* values.
+jvmOpts: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+
+securityContext: {}
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

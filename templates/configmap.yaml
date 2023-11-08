@@ -1,0 +1,32 @@
+{{- if .Values.conf.generate }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vertica-kafka-scheduler.configmap-fullname" . }}
+  labels:
+    {{- include "vertica-kafka-scheduler.labels" . | nindent 4 }}
+data:
+  vkconfig.conf: |
+{{- range $key, $value := $.Values.conf.content }}
+    {{ $key }}={{ $value }}
+{{- end }}
+  vkafka-log-config.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <Configuration status="error" shutdownHook="disable">
+      <Appenders>
+        
+        <Console name="stdout" target="SYSTEM.OUT">
+          <PatternLayout>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{PID}:%t] %logger::%t %X{tuple} [%p] %m%n</Pattern>
+          </PatternLayout>
+        </Console>
+
+      </Appenders>
+      
+      <Loggers>
+        <Logger name="com.vertica.solutions.kafka" level="info" additivity="false">
+          <AppenderRef ref="stdout"/>
+        </Logger>
+      </Loggers>
+    </Configuration>
+{{- end }}

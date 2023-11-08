@@ -1,0 +1,197 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "image": {
+            "type": "object",
+            "description": "The image has the java environment and vkconfig, which is compiled against a specific version of Vertica",
+            "additionalProperties": false,
+            "properties": {
+                "repository": {
+                    "type": "string",
+                    "description": "The image repository and name",
+                    "default": "vertica/kafka-scheduler"
+                },
+                "pullPolicy": {
+                    "type": "string",
+                    "default": "IfNotPresent",
+                    "description": "The pull policy to use for the image"
+                },
+                "tag": {
+                    "type": "string",
+                    "description": "Overrides the image tag whose default is the chart appVersion.  If using the official vertica repository, this tag corresponds to the vertica version that vkconfig was complied against. Pick the same version that matches the Vertica server you have deployed."
+                }
+            },
+            "required": [
+                "pullPolicy",
+                "repository"
+            ],
+            "title": "Image"
+        },
+        "launcherEnabled": {
+            "type": "boolean",
+            "description": "The launcher is a deployment object that runs the 'vkconfig launch' program. You must already have done setup of vkconfig for this program to work. You can temporarily disable it to allow for setup to occur.",
+            "additionalProperties": false,
+            "default": false
+        },
+        "replicaCount": {
+            "type": "integer",
+            "description": "The number of pods for the launcher deployment. The pods themselves go through a leader election process such that only 1 pod is ever handling requests",
+            "default": 1
+        },
+        "initializerEnabled": {
+            "type": "boolean",
+            "description": "The initializer is a pod that runs the container without invoking vkconfig. It gives you CLI access to the vkconfig command. The intention is that you would use the CLI to do neccessary setup then disabled it when you want to run the launcher.",
+            "default": true
+        },
+        "conf": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "The vkconfig.conf is a file that is mounted in the pods for command line options passed to vkconfig. This section controls how that file gets generated and mounted.",
+            "properties": {
+                "generate": {
+                    "type": "boolean",
+                    "description": "Set this to false if you already have a vkconfig.conf in a ConfigMap and don't need helm to generate one.",
+                    "default": true
+                },
+                "configMapName": {
+                    "type": "string",
+                    "description": "The name of the ConfigMap that contains the contents of vkconfig.conf. If generate=false, this must already exist before deployment. If this is omitted a suitable name for the ConfigMap is chosen based on the release/chart name."
+                },
+                "content": {
+                  "description": "Content is a set of key/value pairs that make up the vkconfig.conf. There is no prescribed set of keys that need to be here. See this to find options to set: https://docs.vertica.com/latest/en/kafka-integration/vkconfig-script-options/common-vkconfig-script-options/",
+                  "type": "object",
+                  "additionalProperties": true,
+                  "properties": {
+                      "config-schema": {
+                          "type": "string",
+                          "default": "Scheduler"
+                      },
+                      "username": {
+                          "type": "string",
+                          "default": "dbadmin"
+                      },
+                      "password": {
+                          "type": "string"
+                      },
+                      "dbhost": {
+                          "type": "string"
+                      },
+                      "dbport": {
+                          "type": "string",
+                          "format": "integer",
+                          "default": 5433
+                      },
+                      "enable-ssl": {
+                          "type": "string",
+                          "format": "boolean",
+                          "default": false
+                      }
+                  },
+                  "required": [
+                      "config-schema",
+                      "dbport",
+                      "enable-ssl",
+                      "username"
+                  ],
+                  "title": "Content"
+                }
+            },
+            "required": [
+                "configMapName",
+                "content",
+                "generate"
+            ],
+            "title": "conf"
+        },
+        "tls": {
+            "type": "object",
+            "description": "If vkconfig needs to have TLS setup in order to communicate fill in the following section.",
+            "additionalProperties": false,
+            "properties": {
+                "enabled": {
+                    "type": "boolean",
+                    "description": "Set this to true to mount the secrets and have the JVM options set for the trust/key store in the pods.",
+                    "default": false
+                },
+                "trustStoreSecretName": {
+                    "description": "Name of a preexisting Secret that contains the truststore to use.",
+                    "type": "string"
+                },
+                "trustStoreMountPath": {
+                    "description": "The directory mount for the trustStoreSecretName",
+                    "type": "string"
+                },
+                "trustStoreSecretKey": {
+                    "description": "The key within trustStoreSecretName that has the truststore to use. This will be mounted as a file within the pod",
+                    "type": "string"
+                },
+                "keyStoreSecretName": {
+                    "description": "Name of a preexisting Secret that contains the keystore to use",
+                    "type": "string"
+                },
+                "keyStoreMountPath": {
+                    "description": "The directory mount for the keyStoreSecretName",
+                    "type": "string"
+                },
+                "keyStoreSecretKey": {
+                    "description": "The key within keyStoreSecretName that has the keystore to use. This will be mounted as a file within the pod.",
+                    "type": "string"
+                },
+                "keyStorePassword": {
+                    "description": "The password to access the keystore",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "enabled",
+                "keyStoreMountPath",
+                "keyStorePassword",
+                "keyStoreSecretKey",
+                "keyStoreSecretName",
+                "trustStoreMountPath",
+                "trustStoreSecretKey",
+                "trustStoreSecretName"
+            ],
+            "title": "TLS"
+        },
+        "jvmOpts": {
+            "description": "Controls the setting of VKCONFIG_JVM_OPTS in the pods. Values for truststore and keystore are added automatically based on the tls.* values",
+            "type": "string"
+        },
+        "serviceAccount": {
+            "type": "object",
+            "additionalProperties": false,
+            "description": "Controls the ServiceAccount to use for the pods",
+            "properties": {
+                "create": {
+                    "description": "Specifies whether a service account should be created",
+                    "default": true,
+                    "type": "boolean"
+                },
+                "annotations": {
+                  "description": "Annotations to add to the service account",
+                  "required": [],
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "name": {
+                    "description": "The name of the service account to use. If not set and create is true, a name is generated using the fullname template",
+                    "type": "string"
+                }
+            },
+            "required": [
+                "annotations",
+                "create",
+                "name"
+            ],
+            "title": "ServiceAccount"
+        }
+    },
+    "required": [
+        "conf",
+        "image"
+    ],
+    "title": "Vertica Kafka Scheduler"
+}

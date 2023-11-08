@@ -1,0 +1,64 @@
+{{- if .Values.initializerEnabled }}
+apiVersion: v1
+kind: Pod
+metadata:
+  name: {{ include "vertica-kafka-scheduler.initializer-fullname" . }}
+  labels:
+    vertica.com/kafka-scheduler-component: "initializer"
+    {{- include "vertica-kafka-scheduler.labels" . | nindent 4 }}
+spec:
+  {{- with .Values.imagePullSecrets }}
+  imagePullSecrets:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  serviceAccountName: {{ include "vertica-kafka-scheduler.serviceAccountName" . }}
+  securityContext:
+    {{- toYaml .Values.podSecurityContext | nindent 8 }}
+  containers:
+    - name: main
+      securityContext:
+        {{- toYaml .Values.securityContext | nindent 12 }}
+      image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+      imagePullPolicy: {{ .Values.image.pullPolicy }}
+      command:
+      - sleep
+      - infinity
+      resources:
+        {{- toYaml .Values.resources | nindent 12 }}
+      volumeMounts:
+      - name: vkconfig
+        mountPath: /opt/vertica/packages/kafka/config
+      {{- if .Values.tls.enabled }}
+      - name: trustStore
+        mountPath: {{ .Values.tls.trustStoreMountPath }}
+      - name: keyStore
+        mountPath: {{ .Values.tls.keyStoreMountPath }}
+      {{- end }}
+      env:
+      - name: VKCONFIG_JVM_OPTS
+        value: {{ include "vertica-kafka-scheduler.jvmOpts" . }}
+  volumes:
+  - name: vkconfig
+    configMap:
+      name: {{ include "vertica-kafka-scheduler.configmap-fullname" . }}
+  {{- if .Values.tls.enabled }}
+  - name: trustStore
+    secret:
+      secretName: {{ .Values.tls.trustStoreSecretName }}
+  - name: keyStore
+    secret:
+      secretName: {{ .Values.tls.keyStoreSecretName }}
+  {{- end }}
+  {{- with .Values.nodeSelector }}
+  nodeSelector:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- with .Values.affinity }}
+  affinity:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+  {{- with .Values.tolerations }}
+  tolerations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
+{{- end -}}
