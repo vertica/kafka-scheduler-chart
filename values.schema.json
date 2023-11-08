@@ -4,12 +4,11 @@
     "properties": {
         "image": {
             "type": "object",
-            "description": "The image has the java environment and vkconfig, which is compiled against a specific version of Vertica",
             "additionalProperties": false,
             "properties": {
                 "repository": {
                     "type": "string",
-                    "description": "The image repository and name",
+                    "description": "The image repository and name. This image has the java environment and vkconfig, which is compiled against a specific version of Vertica",
                     "default": "vertica/kafka-scheduler"
                 },
                 "pullPolicy": {
@@ -19,7 +18,7 @@
                 },
                 "tag": {
                     "type": "string",
-                    "description": "Overrides the image tag whose default is the chart appVersion.  If using the official vertica repository, this tag corresponds to the vertica version that vkconfig was complied against. Pick the same version that matches the Vertica server you have deployed."
+                    "description": "Overrides the image tag. If using the official vertica repository, this tag corresponds to the vertica version that vkconfig was complied against. Pick the same version that matches the Vertica server you have deployed."
                 }
             },
             "required": [
@@ -32,7 +31,8 @@
             "type": "boolean",
             "description": "The launcher is a deployment object that runs the 'vkconfig launch' program. You must already have done setup of vkconfig for this program to work. You can temporarily disable it to allow for setup to occur.",
             "additionalProperties": false,
-            "default": false
+            "default": false,
+            "title": "Enabled"
         },
         "replicaCount": {
             "type": "integer",
@@ -42,7 +42,8 @@
         "initializerEnabled": {
             "type": "boolean",
             "description": "The initializer is a pod that runs the container without invoking vkconfig. It gives you CLI access to the vkconfig command. The intention is that you would use the CLI to do neccessary setup then disabled it when you want to run the launcher.",
-            "default": true
+            "default": true,
+            "title": "Enabled"
         },
         "conf": {
             "type": "object",
