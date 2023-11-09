@@ -4,11 +4,12 @@
     "properties": {
         "image": {
             "type": "object",
+            "description": "The image has the java environment and vkconfig, which is compiled against a specific version of Vertica",
             "additionalProperties": false,
             "properties": {
                 "repository": {
                     "type": "string",
-                    "description": "The image repository and name. This image has the java environment and vkconfig, which is compiled against a specific version of Vertica",
+                    "description": "The image repository and name",
                     "default": "vertica/kafka-scheduler"
                 },
                 "pullPolicy": {
@@ -31,8 +32,7 @@
             "type": "boolean",
             "description": "The launcher is a deployment object that runs the 'vkconfig launch' program. You must already have done setup of vkconfig for this program to work. You can temporarily disable it to allow for setup to occur.",
             "additionalProperties": false,
-            "default": false,
-            "title": "Enabled"
+            "default": false
         },
         "replicaCount": {
             "type": "integer",
@@ -42,8 +42,7 @@
         "initializerEnabled": {
             "type": "boolean",
             "description": "The initializer is a pod that runs the container without invoking vkconfig. It gives you CLI access to the vkconfig command. The intention is that you would use the CLI to do neccessary setup then disabled it when you want to run the launcher.",
-            "default": true,
-            "title": "Enabled"
+            "default": true
         },
         "conf": {
             "type": "object",
@@ -80,19 +79,15 @@
                       },
                       "dbport": {
                           "type": "string",
-                          "format": "integer",
-                          "default": 5433
+                          "default": "5433"
                       },
                       "enable-ssl": {
                           "type": "string",
-                          "format": "boolean",
-                          "default": false
+                          "default": "false"
                       }
                   },
                   "required": [
                       "config-schema",
-                      "dbport",
-                      "enable-ssl",
                       "username"
                   ],
                   "title": "Content"

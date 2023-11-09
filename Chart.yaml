@@ -19,3 +19,9 @@ version: 0.1.1
 # The appVersion corresponds to the Vertica version
 appVersion: "23.4.0"
 icon: https://raw.githubusercontent.com/vertica/kafka-scheduler-chart/main/vertica-logo.png
+home: https://github.com/vertica/kafka-scheduler-chart
+sources:
+  - https://github.com/vertica/kafka-scheduler-chart
+maintainers:
+- name: Matt Spilchen
+  email: mspilchen@opentext.com
