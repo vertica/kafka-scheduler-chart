@@ -45,10 +45,14 @@ spec:
           - name: vkconfig
             mountPath: /opt/vertica/packages/kafka/config
           {{- if .Values.tls.enabled }}
+          {{- if .Values.tls.trustStoreMountPath }}
           - name: truststore
             mountPath: {{ .Values.tls.trustStoreMountPath }}
+          {{- end }}
+          {{- if .Values.tls.keyStoreMountPath }}
           - name: keystore
             mountPath: {{ .Values.tls.keyStoreMountPath }}
+          {{- end }}
           {{- end }}
           env:
           - name: VKCONFIG_JVM_OPTS
@@ -60,12 +64,16 @@ spec:
         configMap:
           name: {{ include "vertica-kafka-scheduler.configmap-fullname" . }}
       {{- if .Values.tls.enabled }}
+      {{- if .Values.tls.trustStoreSecretName }}
       - name: truststore
         secret:
           secretName: {{ .Values.tls.trustStoreSecretName }}
+      {{- end }}
+      {{- if .Values.tls.keyStoreSecretName }}
       - name: keystore
         secret:
           secretName: {{ .Values.tls.keyStoreSecretName }}
+      {{- end }}
       {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

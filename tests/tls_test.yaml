@@ -1,0 +1,123 @@
+suite: TLS tests
+templates:
+- deployment.yaml
+tests:
+- it: should not have any JVM opts set if TLS is disabled
+  set:
+    tls.enabled: false
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Deployment
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: ""
+- it: should have JVM opts set if TLS is configured with all opts
+  set:
+    tls:
+      enabled: true
+      trustStoreMountPath: /truststore
+      trustStoreSecretKey: truststore
+      trustStoreSecretName: trust-store-secret
+      keyStoreMountPath: /keystore
+      keyStoreSecretKey: keystore
+      keyStorePassword: pwd
+      keyStoreSecretName: key-store-secret
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Deployment
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: truststore
+        secret:
+          secretName: trust-store-secret
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: keystore
+        secret:
+          secretName: key-store-secret
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: '-Djavax.net.ssl.trustStore=/truststore/truststore-Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=pwd '
+- it: should have JVM opts set if TLS is configured with just truststore
+  set:
+    tls:
+      enabled: true
+      trustStoreMountPath: /truststore
+      trustStoreSecretKey: truststore
+      trustStoreSecretName: trust-store-secret
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Deployment
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: truststore
+        secret:
+          secretName: trust-store-secret
+  - notContains:
+      path: spec.template.spec.volumes
+      any: true
+      content:
+        name: keystore
+  - contains:
+      path: spec.template.spec.containers[0].volumeMounts
+      content:
+        name: truststore
+        mountPath: /truststore
+  - notContains:
+      path: spec.template.spec.containers[0].volumeMounts
+      any: true
+      content:
+        name: keystore
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: '-Djavax.net.ssl.trustStore=/truststore/truststore'
+- it: should have JVM opts set if TLS is configured with just keystore
+  set:
+    tls:
+      enabled: true
+      keyStoreMountPath: /keystore
+      keyStoreSecretKey: keystore
+      keyStoreSecretName: keystore-secret
+      keyStorePassword: my-secret
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Deployment
+  - notContains:
+      path: spec.template.spec.volumes
+      any: true
+      content:
+        name: truststore
+  - contains:
+      path: spec.template.spec.volumes
+      content:
+        name: keystore
+        secret:
+          secretName: keystore-secret
+  - notContains:
+      path: spec.template.spec.containers[0].volumeMounts
+      any: true
+      content:
+        name: truststore
+  - contains:
+      path: spec.template.spec.containers[0].volumeMounts
+      content:
+        name: keystore
+        mountPath: /keystore
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: '-Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=my-secret '
