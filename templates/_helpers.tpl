@@ -104,7 +104,7 @@ Generate te value for VKCONFIG_JVM_OPTS based on values.yaml
 */}}
 {{- define "vertica-kafka-scheduler.jvmOpts" -}}
 {{- if .Values.tls.enabled -}}
-"-Djavax.net.ssl.trustStore={{ .Values.tls.trustStoreMountPath }}/{{ .Values.tls.trustStoreSecretKey }} -Djavax.net.ssl.keyStore={{ .Values.tls.keyStoreMountPath }}/{{ .Values.tls.keyStoreSecretKey }} -Djavax.net.ssl.keyStorePassword={{ .Values.tls.keyStorePassword }} {{ .Values.jvmOpts }}"
+"{{- if .Values.tls.trustStoreSecretName -}}-Djavax.net.ssl.trustStore={{ .Values.tls.trustStoreMountPath }}/{{ .Values.tls.trustStoreSecretKey }}{{- end -}}{{- if .Values.tls.keyStoreSecretName -}}  -Djavax.net.ssl.keyStore={{ .Values.tls.keyStoreMountPath }}/{{ .Values.tls.keyStoreSecretKey }} -Djavax.net.ssl.keyStorePassword={{ .Values.tls.keyStorePassword }} {{ .Values.jvmOpts }}{{- end -}}"
 {{- else -}}
 {{ default (quote "") .Values.jvmOpts }}
 {{- end }}

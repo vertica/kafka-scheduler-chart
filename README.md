@@ -27,9 +27,9 @@ This helm chart will deploy the vertica kafka scheduler. It will deploy the vert
 | tls.enabled | If true, we setup with the assumption that TLS authentication will be used. | false |
 | tls.keyStoreMountPath | Directory name where the keystore will be mounted in the pod | |
 | tls.keyStorePassword | The password to use along with the keystore | |
-| tls.keyStoreSecretKey | A key within the tls.keyStoreSecretName that will be used as the keystore file name | |
+| tls.keyStoreSecretKey | A key within the tls.keyStoreSecretName that will be used as the keystore file name. If this is omitted, then no keystore information is included. | |
 | tls.keyStoreSecretName | Name of an existing Secret that contains the keystore | |
 | tls.trustStoreMountPath | Directory name where the truststore will be mounted in the pod | |
 | tls.trustStoreSecretKey | A key within tls.trustStoreSecretName that will be used as the truststore file name | |
-| tls.trustStoreSecretName | Name of an existing Secret that contains the truststore | |
+| tls.trustStoreSecretName | Name of an existing Secret that contains the truststore. If this is omitted, then no truststore information is included. | |
 | tolerations | Tolerations to use with the pods to control where it is scheduled | |
