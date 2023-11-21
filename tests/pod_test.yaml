@@ -1,0 +1,42 @@
+suite: Pod tests
+templates:
+- pod.yaml
+tests:
+- it: should not include keystore volume if only truststore enabled for TLS
+  set:
+    tls:
+      enabled: true
+      trustStoreMountPath: /truststore
+      trustStoreSecretKey: trust-store.jks
+      trustStoreSecretName: truststore-jks
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Pod
+  - contains:
+      path: spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: "-Djavax.net.ssl.trustStore=/truststore/trust-store.jks"
+  - contains:
+      path: spec.volumes
+      content:
+        name: truststore
+        secret:
+          secretName: truststore-jks
+  - notContains:
+      path: spec.volumes
+      any: true
+      content:
+        name: keystore
+  - contains:
+      path: spec.containers[0].volumeMounts
+      content:
+        name: truststore
+        mountPath: /truststore
+  - notContains:
+      path: spec.containers[0].volumeMounts
+      any: true
+      content:
+        name: keystore
+
