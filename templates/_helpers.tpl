@@ -103,9 +103,31 @@ Create the name of the service account to use
 Generate te value for VKCONFIG_JVM_OPTS based on values.yaml
 */}}
 {{- define "vertica-kafka-scheduler.jvmOpts" -}}
+{{- $opts := list ( include "vertica-kafka-scheduler.trustStore" . ) ( include "vertica-kafka-scheduler.trustStorePassword" . ) ( include "vertica-kafka-scheduler.keyStore" . ) ( include "vertica-kafka-scheduler.keyStorePassword" . ) .Values.jvmOpts -}}
+{{- $opts := compact $opts -}}
+{{ join " " $opts | quote }}
+{{- end }}
+
+{{- define "vertica-kafka-scheduler.trustStore" -}}
 {{- if .Values.tls.enabled -}}
-"{{ if .Values.tls.trustStoreSecretName }}-Djavax.net.ssl.trustStore={{ .Values.tls.trustStoreMountPath }}/{{ .Values.tls.trustStoreSecretKey }}{{ end }}{{ if .Values.tls.keyStoreSecretName }} -Djavax.net.ssl.keyStore={{ .Values.tls.keyStoreMountPath }}/{{ .Values.tls.keyStoreSecretKey }} -Djavax.net.ssl.keyStorePassword={{ .Values.tls.keyStorePassword }} {{ .Values.jvmOpts }}{{ end }}"
-{{- else -}}
-{{ default (quote "") .Values.jvmOpts }}
-{{- end }}
-{{- end }}
+{{ if .Values.tls.trustStoreSecretName }}-Djavax.net.ssl.trustStore={{ .Values.tls.trustStoreMountPath }}/{{ .Values.tls.trustStoreSecretKey }}{{ end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "vertica-kafka-scheduler.trustStorePassword" -}}
+{{- if .Values.tls.enabled -}}
+{{ if .Values.tls.trustStorePassword }}-Djavax.net.ssl.trustStorePassword={{ .Values.tls.trustStorePassword }}{{ end -}}
+{{- end -}}
+{{- end -}}
+
+{{- define "vertica-kafka-scheduler.keyStore" -}}
+{{- if .Values.tls.enabled -}}
+{{ if .Values.tls.keyStoreSecretName }}-Djavax.net.ssl.keyStore={{ .Values.tls.keyStoreMountPath }}/{{ .Values.tls.keyStoreSecretKey }}{{ end }}
+{{- end -}}
+{{- end -}}
+
+{{- define "vertica-kafka-scheduler.keyStorePassword" -}}
+{{- if .Values.tls.enabled -}}
+{{ if .Values.tls.keyStorePassword }}-Djavax.net.ssl.keyStorePassword={{ .Values.tls.keyStorePassword }}{{ end -}}
+{{- end -}}
+{{- end -}}

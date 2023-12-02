@@ -25,11 +25,12 @@ This helm chart will deploy the vertica kafka scheduler. It will deploy the vert
 | serviceAccount.create | If true, a ServiceAccount is created as part of the deployment | true |
 | serviceAccount.name | Name of the service account. If not set and create is true, a name is generated using the fullname template | |
 | tls.enabled | If true, we setup with the assumption that TLS authentication will be used. | false |
-| tls.keyStoreMountPath | Directory name where the keystore will be mounted in the pod | |
-| tls.keyStorePassword | The password to use along with the keystore | |
-| tls.keyStoreSecretKey | A key within the tls.keyStoreSecretName that will be used as the keystore file name. If this is omitted, then no keystore information is included. | |
-| tls.keyStoreSecretName | Name of an existing Secret that contains the keystore | |
-| tls.trustStoreMountPath | Directory name where the truststore will be mounted in the pod | |
-| tls.trustStoreSecretKey | A key within tls.trustStoreSecretName that will be used as the truststore file name | |
+| tls.keyStoreMountPath | Directory name where the keystore will be mounted in the pod. This controls the name of the keystore within the pod. The full path to the keystore will be constructed by combining this parameter with tls.keyStoreSecretKey. | |
+| tls.keyStorePassword | The password to use along with the keystore. If omitted, then no password is used. | |
+| tls.keyStoreSecretKey | A key within tls.keyStoreSecretName that will be used as the keystore file name. This is used along with tls.keyStoreMountPath to form the full path to the key in the pod. | |
+| tls.keyStoreSecretName | Name of an existing Secret that contains the keystore. If this is omitted, then no keystore information is included. | |
+| tls.trustStoreMountPath | Directory name where the truststore will be mounted in the pod. This controls the name of the truststore within the pod. The full path to the truststore will be constructed by combining this parameter with tls.trustStoreSecretKey. | |
+| tls.trustStorePassword | The password to use along with the truststore. If omitted, then no password is used. | |
+| tls.trustStoreSecretKey | A key within tls.trustStoreSecretName that will be used as the truststore file name. This is used along with tls.trustStoreMountPath to form the full path to the key in the pod. | |
 | tls.trustStoreSecretName | Name of an existing Secret that contains the truststore. If this is omitted, then no truststore information is included. | |
 | tolerations | Tolerations to use with the pods to control where it is scheduled | |

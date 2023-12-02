@@ -80,6 +80,8 @@ tls:
   # The key within trustStoreSecretName that has the truststore to use. This
   # will be mounted as a file within the pod.
   trustStoreSecretKey: ""
+  # The password to access the truststore
+  trustStorePassword: ""
   # Name of a preexisting Secret that contains the keystore to use.
   keyStoreSecretName: ""
   # The next two control the name of the key store. The path will be:
