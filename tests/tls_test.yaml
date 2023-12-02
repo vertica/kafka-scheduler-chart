@@ -14,6 +14,19 @@ tests:
       content:
         name: VKCONFIG_JVM_OPTS
         value: ""
+- it: should have only JVM opts set if TLS is disabled
+  set:
+    tls.enabled: false
+    jvmOpts: "-Dspecial-fix=true"
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Deployment
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: "-Dspecial-fix=true"
 - it: should have JVM opts set if TLS is configured with all opts
   set:
     tls:
@@ -45,7 +58,7 @@ tests:
       path: spec.template.spec.containers[0].env
       content:
         name: VKCONFIG_JVM_OPTS
-        value: '-Djavax.net.ssl.trustStore=/truststore/truststore -Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=pwd '
+        value: '-Djavax.net.ssl.trustStore=/truststore/truststore -Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=pwd'
 - it: should have JVM opts set if TLS is configured with just truststore
   set:
     tls:
@@ -120,4 +133,40 @@ tests:
       path: spec.template.spec.containers[0].env
       content:
         name: VKCONFIG_JVM_OPTS
-        value: ' -Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=my-secret '
+        value: '-Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=my-secret'
+- it: should concatenate custom JVM opts from TLS config
+  set:
+    tls:
+      enabled: true
+      keyStoreMountPath: /keystore
+      keyStoreSecretKey: keystore
+      keyStoreSecretName: keystore-secret
+      keyStorePassword: my-secret
+    jvmOpts: "-Dmy-special-opt"
+    launcherEnabled: true
+  asserts:
+  - isKind:
+      of: Deployment
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: '-Djavax.net.ssl.keyStore=/keystore/keystore -Djavax.net.ssl.keyStorePassword=my-secret -Dmy-special-opt'
+- it: should allow truststore password to be set in TLS config
+  set:
+    tls:
+      enabled: true
+      trustStoreMountPath: /truststore
+      trustStoreSecretKey: my-truststore.jks
+      trustStoreSecretName: trust-store-secret
+      trustStorePassword: abcdef123
+    launcherEnabled: true
+    jvmOpts: "-Dextra-opt"
+  asserts:
+  - isKind:
+      of: Deployment
+  - contains:
+      path: spec.template.spec.containers[0].env
+      content:
+        name: VKCONFIG_JVM_OPTS
+        value: '-Djavax.net.ssl.trustStore=/truststore/my-truststore.jks -Djavax.net.ssl.trustStorePassword=abcdef123 -Dextra-opt'

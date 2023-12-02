@@ -111,43 +111,40 @@
                     "default": false
                 },
                 "trustStoreSecretName": {
-                    "description": "Name of a preexisting Secret that contains the truststore to use.",
+                    "description": "Name of an existing Secret that contains the keystore. If this is omitted, then no keystore information is included.",
                     "type": "string"
                 },
                 "trustStoreMountPath": {
-                    "description": "The directory mount for the trustStoreSecretName",
+                    "description": "Directory name where the truststore will be mounted in the pod. This controls the name of the truststore within the pod. The full path to the truststore will be constructed by combining this parameter with trustStoreSecretKey.",
                     "type": "string"
                 },
                 "trustStoreSecretKey": {
-                    "description": "The key within trustStoreSecretName that has the truststore to use. This will be mounted as a file within the pod",
+                    "description": "A key within tls.trustStoreSecretName that will be used as the truststore file name. This is used along with tls.trustStoreMountPath to form the full path to the key in the pod.",
+                    "type": "string"
+                },
+                "trustStorePassword": {
+                    "description": "The password to use along with the truststore. If omitted, then no password is used.",
                     "type": "string"
                 },
                 "keyStoreSecretName": {
-                    "description": "Name of a preexisting Secret that contains the keystore to use",
+                    "description": "Name of an existing Secret that contains the keystore. If this is omitted, then no keystore informiation is included.",
                     "type": "string"
                 },
                 "keyStoreMountPath": {
-                    "description": "The directory mount for the keyStoreSecretName",
+                    "description": "Directory name where the keystore will be mounted in the pod. This controls the name of the keystore within the pod. The full path to the keystore will be constructed by combining this parameter with keyStoreSecretKey.",
                     "type": "string"
                 },
                 "keyStoreSecretKey": {
-                    "description": "The key within keyStoreSecretName that has the keystore to use. This will be mounted as a file within the pod.",
+                    "description": "A key within keyStoreSecretName that will be used as the keystore file name. This is used along with tls.keyStoreMountPath to form the full path to the key in the pod.",
                     "type": "string"
                 },
                 "keyStorePassword": {
-                    "description": "The password to access the keystore",
+                    "description": "The password to use along with the keystore. If omitted, then no password is used.",
                     "type": "string"
                 }
             },
             "required": [
-                "enabled",
-                "keyStoreMountPath",
-                "keyStorePassword",
-                "keyStoreSecretKey",
-                "keyStoreSecretName",
-                "trustStoreMountPath",
-                "trustStoreSecretKey",
-                "trustStoreSecretName"
+                "enabled"
             ],
             "title": "TLS"
         },
