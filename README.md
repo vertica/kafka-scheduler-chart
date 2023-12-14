@@ -278,16 +278,21 @@ Now that you have a containerized Kafka cluster and VerticaDB CR running, you ca
 
 ## Parameters
 
+
 `affinity` 
+
 : Applies [affinity rules](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity) that constrain the scheduler to specific nodes.
 
 `conf.configMapName`
+
 : Name of the [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/) to use and optionally generate. If omitted, the chart picks a suitable default.
 
 `conf.content`
+
 : Set of key-values pairs in the generated ConfigMap. If `conf.generate` is `false`, this setting is ignored.
 
 `conf.generate`
+
 : When set to `true`, the Helm chart controls the creation of the `vkconfig.conf` ConfigMap.
 
   **Default**: `true`
