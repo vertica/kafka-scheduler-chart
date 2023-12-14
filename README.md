@@ -280,130 +280,110 @@ Now that you have a containerized Kafka cluster and VerticaDB CR running, you ca
 
 <dl>
   <dt>affinity</dt>
-  <dd>Applies [affinity rules](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity) that constrain the scheduler to specific nodes.</dd>
+    <dd>Applies <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#affinity-and-anti-affinity">affinity rules</a> that constrain the scheduler to specific nodes.</dd>
 
   <dt>conf.configMapName</dt>
-  <dd>Name of the [ConfigMap](https://kubernetes.io/docs/concepts/configuration/configmap/) to use and optionally generate. If omitted, the chart picks a suitable default.</dd>
+    <dd>Name of the <a href="https://kubernetes.io/docs/concepts/configuration/configmap/">ConfigMap</a> to use and optionally generate. If omitted, the chart picks a suitable default.</dd>
 
   <dt>conf.content</dt>
-  <dd>Set of key-values pairs in the generated ConfigMap. If `conf.generate` is `false`, this setting is ignored.</dd>
+    <dd>Set of key-value pairs in the generated ConfigMap. If <code>conf.generate</code> is <code>false</code>, this setting is ignored.</dd>
 
   <dt>conf.generate</dt>
-  <dd>When set to `true`, the Helm chart controls the creation of the `vkconfig.conf` ConfigMap.<br><b>Default</b>: true</dd>
+    <dd>When set to <code>true</code>, the Helm chart controls the creation of the <code>vkconfig.conf</code> ConfigMap.</dd>
+    <dd><b>Default</b>: <code>true</code></dd>
 
   <dt>fullNameOverride</dt>
-  <dd>Gives the Helm chart full control over the name of the objects that get created. This takes precedence over `nameOverride`.</dd>
+    <dd>Gives the Helm chart full control over the name of the objects that get created. This takes precedence over <code>nameOverride</code>.</dd>
 
   <dt>initializerEnabled</dt>
-  <dd>When set to `true`, the initializer pod is created. This can be used to run any setup tasks needed.
-
-  **Default**: `true`</dd>
+    <dd>When set to <code>true</code>, the initializer pod is created. This can be used to run any setup tasks needed.</dd>
+    <dd><b>Default</b>: <code>true</code></dd>
 
   <dt>image.pullPolicy</dt>
-  <dd>How often Kubernetes pulls the image for an object. For details, see [Updating Images](https://kubernetes.io/docs/concepts/containers/images/#updating-images) in the Kubernetes documentation.
-
-  **Default**: `IfNotPresent`</dd>
+    <dd>How often Kubernetes pulls the image for an object. For details, see <a href="https://kubernetes.io/docs/concepts/containers/images/#updating-images">Updating Images</a> in the Kubernetes documentation.</dd>
+    <dd><b>Default</b>: <code>IfNotPresent</code></dd>
 
   <dt>image.repository</dt>
-  <dd>The image repository and name that contains the Vertica Kafka Scheduler.
-
-  **Default**: `vertica/kafka-scheduler`</dd>
+    <dd>The image repository and name that contains the Vertica Kafka Scheduler.</dd>
+    <dd><b>Default</b>: <code>vertica/kafka-scheduler</code></dd>
 
   <dt>image.tag</dt>
-  <dd>Version of the Vertica Kafka Scheduler. This setting must match the version of the Vertica server that the scheduler connects to.
-
-  **Default**: Helm chart's `appVersion`</dd>
+    <dd>Version of the Vertica Kafka Scheduler. This setting must match the version of the Vertica server that the scheduler connects to.</dd>
+    <dd><b>Default</b>: Helm chart's <code>appVersion</code></dd>
 
   <dt>imagePullSecrets</dt>
-  <dd>List of [Secrets](https://kubernetes.io/docs/concepts/configuration/secret/) that contain the required credentials to pull the image.</dd>
+    <dd>List of <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Secrets</a> that contain the required credentials to pull the image.</dd>
 
   <dt>launcherEnabled</dt>
-  <dd>When set to `true`, the Helm chart creates the launch deployment. Enable this setting after you configure the container in initializer mode.
-
-  **Default**: `true`</dd>
+    <dd>When set to <code>true</code>, the Helm chart creates the launch deployment. Enable this setting after you configure the scheduler options in the container.</dd>
+    <dd><b>Default</b>: <code>true</code></dd>
 
   <dt>jvmOpts</dt>
-  <dd>Values to assign to the `VKCONFIG_JVM_OPTS` environment variable in the pods.
+    <dd>Values to assign to the <code>VKCONFIG_JVM_OPTS</code> environment variable in the pods.
 
   > **NOTE**
-  > You can omit most truststore and keystore settings because they are set by `tls.*` parameters.</dd>
+  > You can omit most truststore and keystore settings because they are set by <code>tls.*</code> parameters.</dd>
 
   <dt>nameOverride</dt>
-  <dd>Controls the name of the objects that get created. This is combined with the Helm chart release to form the name.</dd>
+    <dd>Controls the name of the objects that get created. This is combined with the Helm chart release to form the name.</dd>
 
   <dt>nodeSelector</dt>
-  <dd>[nodeSelector](https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector) that controls where the pod is scheduled.</dd>
+    <dd><a href="https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#nodeselector">nodeSelector</a> that controls where the pod is scheduled.</dd>
 
   <dt>podAnnotations</dt>
-  <dd>[Annotations](https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/) that you want to attach to the pods.</dd>
+    <dd><a href="https://kubernetes.io/docs/concepts/overview/working-with-objects/annotations/">Annotations</a> that you want to attach to the pods.</dd>
 
   <dt>podSecurityContext</dt>
-  <dd>[Security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for the pods.</dd>
+    <dd><a href="https://kubernetes.io/docs/tasks/configure-pod-container/security-context/">Security context</a> for the pods.</dd>
 
   <dt>replicaCount</dt>
-  <dd>Number of launch pods that the chart deploys.
-
-  **Default**: 1</dd>
+    <dd>Number of launch pods that the chart deploys.</dd>
+    <dd><b>Default</b>: 1</dd>
 
   <dt>resources</dt>
-  <dd>Host resources to use for the pod.</dd>
+    <dd>Host resources to use for the pod.</dd>
 
   <dt>securityContext</dt>
-  <dd>[Security context](https://kubernetes.io/docs/tasks/configure-pod-container/security-context/) for the container in the pod.</dd>
+    <dd><a href="https://kubernetes.io/docs/tasks/configure-pod-container/security-context/">Security context</a> for the container in the pod.</dd>
 
   <dt>serviceAccount.annotations</dt>
-  <dd>Annotations to attach to the [ServiceAccount](https://kubernetes.io/docs/concepts/security/service-accounts/).</dd>
+    <dd>Annotations to attach to the <a href="https://kubernetes.io/docs/concepts/security/service-accounts/">ServiceAccount</a>.</dd>
 
   <dt>serviceAccount.create</dt>
-  <dd>When set to `true`, a [ServiceAccount](https://kubernetes.io/docs/concepts/security/service-accounts/) is created as part of the deployment.</dd>
-  <dd><b>Default</b>: true</dd>
+    <dd>When set to <code>true</code>, a <a href="https://kubernetes.io/docs/concepts/security/service-accounts/">ServiceAccount</a> is created as part of the deployment.</dd>
+    <dd><b>Default</b>: true</dd>
 
   <dt>serviceAccount.name</dt>
-  <dd>Name of the [service account](https://kubernetes.io/docs/concepts/security/service-accounts/). If this parameter is not set and `serviceAccount.create` is set to `true`, a name is generated using the fullname template.</dd>
+    <dd>Name of the <a href="https://kubernetes.io/docs/concepts/security/service-accounts/">service account</a>. If this parameter is not set and <code>serviceAccount.create</code> is set to <code>true</code>, a name is generated using the fullname template.</dd>
 
   <dt>tls.enabled</dt>
-  <dd>When set to `true`, the scheduler is set up for TLS authentication.
-
-  **Default**: `false`</dd>
+    <dd>When set to <code>true</code>, the scheduler is set up for TLS authentication.</dd>
+    <dd><b>Default</b>: <code>false</code></dd>
 
   <dt>tls.keyStoreMountPath</dt>
-  <dd>Directory name where the keystore is mounted in the pod. This setting controls the name of the keystore within the pod. The full path to the keystore is constructed by combining this parameter and `tls.keyStoreSecretKey`.</dd>
+    <dd>Directory name where the keystore is mounted in the pod. This setting controls the name of the keystore within the pod. The full path to the keystore is constructed by combining this parameter and <code>tls.keyStoreSecretKey</code>.</dd>
 
   <dt>tls.keyStorePassword</dt>
-  <dd>Password that protects the keystore. If this setting is omitted, then no password is used.</dd>
+    <dd>Password that protects the keystore. If this setting is omitted, then no password is used.</dd>
 
   <dt>tls.keyStoreSecretKey</dt>
-  <dd>Key within `tls.keyStoreSecretName` that is used as the keystore file name. This setting and `tls.keyStoreMountPath` form the full path to the key in the pod.</dd>
+    <dd>Key within <code>tls.keyStoreSecretName</code> that is used as the keystore file name. This setting and <code>tls.keyStoreMountPath</code> form the full path to the key in the pod.</dd>
 
   <dt>tls.keyStoreSecretName</dt>
-  <dd>Name of an existing [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) that contains the keystore. If this setting is omitted, no keystore information is included.</dd>
+    <dd>Name of an existing <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Secret</a> that contains the keystore. If this setting is omitted, no keystore information is included.</dd>
 
   <dt>tls.trustStoreMountPath</dt>
-  <dd>Directory name where the truststore is mounted in the pod. This setting controls the name of the truststore within the pod. The full path to the truststore is constructed by combining this parameter with `tls.trustStoreSecretKey`.</dd>
+    <dd>Directory name where the truststore is mounted in the pod. This setting controls the name of the truststore within the pod. The full path to the truststore is constructed by combining this parameter with <code>tls.trustStoreSecretKey</code>.</dd>
 
   <dt>tls.trustStorePassword</dt>
-  <dd>Password that protects the truststore. If this setting is omitted, then no password is used.</dd>
+    <dd>Password that protects the truststore. If this setting is omitted, then no password is used.</dd>
 
   <dt>tls.trustStoreSecretKey</dt>
-  <dd>Key within `tls.trustStoreSecretName` that is used as the truststore file name. This is used with `tls.trustStoreMountPath` to form the full path to the key in the pod.</dd>
+    <dd>Key within <code>tls.trustStoreSecretName</code> that is used as the truststore file name. This is used with <code>tls.trustStoreMountPath</code> to form the full path to the key in the pod.</dd>
 
   <dt>tls.trustStoreSecretName</dt>
-  <dd>Name of an existing [Secret](https://kubernetes.io/docs/concepts/configuration/secret/) that contains the truststore. If this setting is omitted, then no truststore information is included.</dd>
+    <dd>Name of an existing <a href="https://kubernetes.io/docs/concepts/configuration/secret/">Secret</a> that contains the truststore. If this setting is omitted, then no truststore information is included.</dd>
 
   <dt>tolerations</dt>
-  <dd>Applies [tolerations](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) that control where the pod is scheduled.</dd>
-  
+    <dd>Applies <a href="https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/">tolerations</a> that control where the pod is scheduled.</dd>
 </dl>
-
-
-``
-: 
-
-``
-: 
-
-``
-: 
-
-``
-: 
