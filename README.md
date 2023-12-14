@@ -1,10 +1,10 @@
-This Helm chart deploys the [vertica-kafka-scheduler](https://github.com/vertica/vertica-containers/tree/main/vertica-kafka-scheduler) in two modes:
+This Helm chart deploys the [vertica-kafka-scheduler](https://github.com/vertica/vertica-containers/tree/main/vertica-kafka-scheduler) with two modes:
 - **initializer**: Configuration mode. Starts a container so that you can `exec` into it and configure it.
 - **launcher**: Launch mode. Launches the vkconfig scheduler. Starts a container that calls `vkconfig launch` automatically. Run this mode after you configure the container in `initializer` mode.
 
-## Install the chart 
+## Install the charts
 
-Add the charts to your repo and install the Helm chart:
+Add the charts to your repo and install the Helm chart. The following `helm install` command uses the `image.tag` [parameter](#parameters) to install version 24.1.0:
 
 ```shell
 $ helm repo add vertica-charts https://vertica.github.io/charts
@@ -13,13 +13,9 @@ $ helm install vkscheduler vertica-charts/vertica-kafka-scheduler \
     --set "image.tag=24.1.0"
 ```
 
-## Usage
+## Sample manifests
 
-The following sections use the [Strimzi operator](https://strimzi.io/) to deploy Kafka on Kubernetes.
-
-### Sample manifests 
-
-The following sections create and deploy multiple manifests whose length disrupts the document flow. To improve readability, these resources are available in the following drop downs:
+The following dropdowns provide sample manifests for a Kafka cluster, VerticaDB operator and custom resource (CR), and vkconfig scheduler. These manifests are applied in [Usage](#usage) to demonstrate how a simple deployment:
 
 <details>
   <summary>kafka-cluster.yaml (with <a href="https://strimzi.io/">Strimzi operator)</a></summary>
@@ -71,7 +67,7 @@ The following sections create and deploy multiple manifests whose length disrupt
 </details>
 
 <details>
-  <summary>vdb-operator-cr.yaml</summary>
+  <summary>vdb-op-cr.yaml</summary>
 
    ```yaml
    apiVersion: vertica.com/v1
@@ -147,8 +143,13 @@ The following sections create and deploy multiple manifests whose length disrupt
    ```
 </details>
 
+## Usage
+
+The following sections deploy a Kafka cluster and a VerticaDB operator and CR on Kubernetes. Then, they show you how to configure Vertica to consume data from Kafka by setting up the necessary tables and configuring the scheduler. Finally, you launch the scheduler and send data on the command line to test the implementation.
 
 ### Deploy the manifests
+
+Apply manifests on Kubernetes to create a Kafka cluster, VerticaDB operator, and VerticaDB CR:
 
 1. Create a namespace. The following command creates a namespace named `kafka`:
    ```shell
@@ -159,12 +160,14 @@ The following sections create and deploy multiple manifests whose length disrupt
    kubectl apply -f kafka-cluster.yaml
    ```
   
-2. Deploy the VerticaDB operator and custom resource. The [vdb-operator-cr.yaml](#sample-manifests) manifest deploys version 12.0.3:
+2. Deploy the VerticaDB operator and custom resource. The [vdb-op-cr.yaml](#sample-manifests) manifest deploys version 12.0.3:
    ```shell
-   kubectl apply -f vdb-operator-cr.yaml
+   kubectl apply -f vdb-op-cr.yaml
    ```
 
 ### Set up Vertica
+
+Create tables and resources so that Vertica can consume data from a Kafka topic:
   
 1. Create a Vertica database for Kafka messages:
    ```sql
@@ -179,10 +182,11 @@ The following sections create and deploy multiple manifests whose length disrupt
    CREATE RESOURCE POOL scheduler_pool PLANNEDCONCURRENCY 1;
    ```
 
-### Set up the scheduler
-1. Deploy the [vertica-kafka-scheduler Helm chart](#sample-manifests). 
+### Create a Kafka topic
 
-7. Open a new shell and start the Kafka producer:
+Start the Kafka service, and create a Kafka topic that the scheduler can consume data from:
+
+1. Open a new shell and start the Kafka producer:
    ```shell
    kubectl -namespace kafka run kafka-producer -ti --image=quay.io/strimzi/kafka:0.38.0-kafka-3.6.0 --rm=true --restart=Never -- bash
    ```
@@ -190,11 +194,21 @@ The following sections create and deploy multiple manifests whose length disrupt
    ```shell
    bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap.kafka:9092 --topic KafkaTopic1
    ```
-9. Use `kubectl exec` to get a shell in the initializer pod:
+
+### Configure the scheduler
+
+Deploy the scheduler container in initializer mode, and configure the scheduler to consume data from the [Kafka topic](#create-a-kafka-topic):
+
+1. Deploy the [vertica-kafka-scheduler Helm chart](#sample-manifests). This manifest has `initializerEnabled` set to `true` so you can configure the vkconfig container before you launch the scheduler:
+   ```shell
+   kubectl apply -f vertica-kafka-scheduler.yaml
+   ```
+
+2. Use `kubectl exec` to get a shell in the initializer pod:
    ```shell
    kubectl exec -namespace main -it vk1-vertica-kafka-scheduler-initializer -- bash
    ```
-10. Now, you can set configuration options for the scheduler. For descriptions of each of the following options, see [vkconfig script options](https://docs.vertica.com/23.4.x/en/kafka-integration/vkconfig-script-options/):
+3.  Set configuration options for the scheduler. For descriptions of each of the following options, see [vkconfig script options](https://docs.vertica.com/23.4.x/en/kafka-integration/vkconfig-script-options/):
     ```shell
     # scheduler options 
     vkconfig scheduler --conf /opt/vertica/packages/kafka/config/vkconfig.conf \
