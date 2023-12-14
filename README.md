@@ -190,7 +190,7 @@ Start the Kafka service, and create a Kafka topic that the scheduler can consume
    ```shell
    kubectl -namespace kafka run kafka-producer -ti --image=quay.io/strimzi/kafka:0.38.0-kafka-3.6.0 --rm=true --restart=Never -- bash
    ```
-8. Create the Kafka topic that the scheduler subscribes to:
+1. Create the Kafka topic that the scheduler subscribes to:
    ```shell
    bin/kafka-console-producer.sh --bootstrap-server my-cluster-kafka-bootstrap.kafka:9092 --topic KafkaTopic1
    ```
@@ -204,11 +204,11 @@ Deploy the scheduler container in initializer mode, and configure the scheduler 
    kubectl apply -f vertica-kafka-scheduler.yaml
    ```
 
-2. Use `kubectl exec` to get a shell in the initializer pod:
+1. Use `kubectl exec` to get a shell in the initializer pod:
    ```shell
    kubectl exec -namespace main -it vk1-vertica-kafka-scheduler-initializer -- bash
    ```
-3.  Set configuration options for the scheduler. For descriptions of each of the following options, see [vkconfig script options](https://docs.vertica.com/23.4.x/en/kafka-integration/vkconfig-script-options/):
+1.  Set configuration options for the scheduler. For descriptions of each of the following options, see [vkconfig script options](https://docs.vertica.com/23.4.x/en/kafka-integration/vkconfig-script-options/):
     ```shell
     # scheduler options 
     vkconfig scheduler --conf /opt/vertica/packages/kafka/config/vkconfig.conf \
