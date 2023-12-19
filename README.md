@@ -77,42 +77,19 @@ The following dropdowns provide sample manifests for a Kafka cluster, VerticaDB 
        vertica.com/include-uid-in-path: "false"
        vertica.com/vcluster-ops: "false"
      name: vdb-1203
-     namespace: main
    spec:
-     autoRestartVertica: true
      communal:
        credentialSecret: ""
        endpoint: https://s3.amazonaws.com
        path: s3://<path>/<to>/<s3-bucket>
-       region: us-east-1
-       s3ServerSideEncryption: ""
-     dbName: vertdb
      image: vertica/vertica-k8s:12.0.3-0
-     imagePullPolicy: IfNotPresent
      initPolicy: Revive
      licenseSecret: license
-     local:
-       catalogPath: ""
-       dataPath: /data
-       depotPath: /depot
-       depotVolume: EmptyDir
-       requestSize: 10Gi
-     nmaTLSSecret: ""
      passwordSecret: passwd
-     podSecurityContext:
-       fsGroup: 5000
-       runAsUser: 5000
-     serviceAccountName: vertica
-     shardCount: 6
      subclusters:
-     - affinity: {}
-       name: sc0
-       resources: {}
-       serviceName: sc0
-       serviceType: ClusterIP
+     - name: sc0
        size: 3
        type: primary
-     upgradePolicy: Offline
    ```
 </details>
 
