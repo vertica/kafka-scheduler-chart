@@ -84,7 +84,6 @@ The following dropdowns provide sample manifests for a Kafka cluster, VerticaDB 
        path: s3://<path>/<to>/<s3-bucket>
      image: vertica/vertica-k8s:12.0.3-0
      initPolicy: Create
-     passwordSecret: passwd
      subclusters:
      - name: sc0
        size: 3
@@ -110,7 +109,6 @@ The following dropdowns provide sample manifests for a Kafka cluster, VerticaDB 
        username: dbadmin
        dbport: '5433'
        enable-ssl: 'false'
-       password: Vertica!
        dbhost: 10.20.30.40
    tls:
      enabled: false
