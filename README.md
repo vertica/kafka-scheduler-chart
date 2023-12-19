@@ -83,8 +83,7 @@ The following dropdowns provide sample manifests for a Kafka cluster, VerticaDB 
        endpoint: https://s3.amazonaws.com
        path: s3://<path>/<to>/<s3-bucket>
      image: vertica/vertica-k8s:12.0.3-0
-     initPolicy: Revive
-     licenseSecret: license
+     initPolicy: Create
      passwordSecret: passwd
      subclusters:
      - name: sc0
@@ -137,7 +136,7 @@ Apply manifests on Kubernetes to create a Kafka cluster, VerticaDB operator, and
    kubectl apply -f kafka-cluster.yaml
    ```
   
-2. Deploy the VerticaDB operator and custom resource. The [vdb-op-cr.yaml](#sample-manifests) manifest deploys version 12.0.3:
+2. Deploy the VerticaDB operator and custom resource. The [vdb-op-cr.yaml](#sample-manifests) manifest deploys version 12.0.3. Before you apply the manifest, edit `spec.communal.path` to provide a path to an existing S3 bucket:
    ```shell
    kubectl apply -f vdb-op-cr.yaml
    ```
