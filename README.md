@@ -96,7 +96,7 @@ The following dropdowns provide sample manifests for a Kafka cluster, VerticaDB 
 
   ```yaml
    image:
-     repository: vertica/kafka-scheduler
+     repository: opentext/kafka-scheduler
      pullPolicy: IfNotPresent
      tag: 12.0.3
    launcherEnabled: false
@@ -293,7 +293,7 @@ Now that you have a containerized Kafka cluster and VerticaDB CR running, you ca
 
   <dt>image.repository</dt>
     <dd>The image repository and name that contains the Vertica Kafka Scheduler.</dd>
-    <dd><b>Default</b>: <code>vertica/kafka-scheduler</code></dd>
+    <dd><b>Default</b>: <code>opentext/kafka-scheduler</code></dd>
 
   <dt>image.tag</dt>
     <dd>Version of the Vertica Kafka Scheduler. This setting must match the version of the Vertica server that the scheduler connects to.</dd>
