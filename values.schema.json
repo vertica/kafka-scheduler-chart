@@ -10,7 +10,7 @@
                 "repository": {
                     "type": "string",
                     "description": "The image repository and name",
-                    "default": "vertica/kafka-scheduler"
+                    "default": "opentext/kafka-scheduler"
                 },
                 "pullPolicy": {
                     "type": "string",

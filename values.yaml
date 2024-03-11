@@ -20,7 +20,7 @@ image:
   # Overrides the image tag. If using the official vertica repository, this tag
   # corresponds to the vertica version that vkconfig was complied against. Pick
   # the same version that matches the Vertica server you have deployed.
-  tag: "23.4.0"
+  tag: "24.1.0"
 
 imagePullSecrets: []
 nameOverride: ""
