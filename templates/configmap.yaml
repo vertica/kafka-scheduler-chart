@@ -17,7 +17,7 @@ data:
         
         <Console name="stdout" target="SYSTEM.OUT">
           <PatternLayout>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%X{PID}:%t] %logger::%t %X{tuple} [%p] %m%n</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}{{ printf "{%s}" .Values.timezone }} [%X{PID}:%t] %logger::%t %X{tuple} [%p] %m%n</Pattern>
           </PatternLayout>
         </Console>
 

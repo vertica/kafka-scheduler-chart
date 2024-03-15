@@ -344,6 +344,10 @@ Now that you have a containerized Kafka cluster and VerticaDB CR running, you ca
   <dt>serviceAccount.name</dt>
     <dd>Name of the <a href="https://kubernetes.io/docs/concepts/security/service-accounts/">service account</a>. If this parameter is not set and <code>serviceAccount.create</code> is set to <code>true</code>, a name is generated using the fullname template.</dd>
 
+  <dt>timezone</dt>
+    <dd>Utilize this to manage the timezone of the logger. As logging employs log4j, ensure you use a Java-friendly timezone ID. Refer to this site for available IDs: https://docs.oracle.com/middleware/1221/wcs/tag-ref/MISC/TimeZones.html</dd>
+    <dd><b>Default</b>: UTC</dd>
+
   <dt>tls.enabled</dt>
     <dd>When set to <code>true</code>, the scheduler is set up for TLS authentication.</dd>
     <dd><b>Default</b>: <code>false</code></dd>
