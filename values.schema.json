@@ -152,6 +152,11 @@
             "description": "Controls the setting of VKCONFIG_JVM_OPTS in the pods. Values for truststore and keystore are added automatically based on the tls.* values",
             "type": "string"
         },
+        "timezone": {
+            "description": "Utilize this to manage the timezone of the logger. As logging employs log4j, ensure you use a Java-friendly timezone ID. Refer to this site for available IDs: https://docs.oracle.com/middleware/1221/wcs/tag-ref/MISC/TimeZones.html",
+            "type": "string",
+            "default": "UTC"
+        },
         "serviceAccount": {
             "type": "object",
             "additionalProperties": false,
